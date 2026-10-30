@@ -1,0 +1,68 @@
+{
+  "family": "paylab-wallet-svc",
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "networkMode": "awsvpc",
+  "cpu": "256",
+  "memory": "512",
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  },
+  "executionRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/paylabTaskRole",
+  "containerDefinitions": [
+    {
+      "name": "wallet-svc",
+      "image": "<ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/paylab/wallet-svc:v1",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8082,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "PORT",
+          "value": "8082"
+        },
+        {
+          "name": "DB_HOST",
+          "value": "<DB_HOST>"
+        },
+        {
+          "name": "DB_PORT",
+          "value": "5432"
+        },
+        {
+          "name": "DB_NAME",
+          "value": "paylab"
+        },
+        {
+          "name": "DB_USER",
+          "value": "paylab"
+        },
+        {
+          "name": "DB_SSL",
+          "value": "true"
+        }
+      ],
+      "secrets": [
+        {
+          "name": "DB_PASSWORD",
+          "valueFrom": "arn:aws:ssm:<REGION>:<ACCOUNT_ID>:parameter/paylab/db/password"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/paylab",
+          "awslogs-region": "<REGION>",
+          "awslogs-stream-prefix": "wallet-svc"
+        }
+      }
+    }
+  ]
+}
