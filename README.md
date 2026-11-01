@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".github/aricxpoint-logo-white.png">
+    <img alt="aricxpoint technologies" src=".github/aricxpoint-logo-black.png" width="320">
+  </picture>
+</p>
+
 # paylab-wallet-svc
 
 Part of **PayLab** (aricxpoint DevOps class: "Payment Web App Deployment").
@@ -82,7 +89,7 @@ git push (main) -> CodePipeline Source -> CodeBuild (buildspec.yml) -> ECR payla
 | File | Purpose |
 |---|---|
 | `buildspec.yml` | CodeBuild steps: log in to ECR, build, push `:<short-commit>` and `:latest`, write `imagedefinitions.json`. |
-| `taskdef.json` | ECS task definition template (with `<ACCOUNT_ID>`-style placeholders). Registered once by `paylab-infra/07-services.sh`. |
+| `taskdef.json` | ECS task definition template (with `<ACCOUNT_ID>`-style placeholders). Registered by `paylab-infra/terraform` (`ecs.tf`); the pipeline then registers a new revision on every deploy. |
 
 The container name in `taskdef.json` and in `imagedefinitions.json` is `wallet-svc`. They **must match**, or the deploy stage fails.
 
